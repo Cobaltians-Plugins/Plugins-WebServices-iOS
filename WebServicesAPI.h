@@ -3,7 +3,8 @@
 //
 
 #import "NSThread+withBlocks.h"
-#import "CobaltViewController.h"
+
+#import <Cobalt/CobaltViewController.h>
 
 #define DEBUGAPI    0
 

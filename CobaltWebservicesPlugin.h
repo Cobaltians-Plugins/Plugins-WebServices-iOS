@@ -6,8 +6,9 @@
 //  Copyright (c) 2014 Haploid. All rights reserved.
 //
 
-#import "CobaltAbstractPlugin.h"
 #import "WebServicesAPI.h"
+
+#import <Cobalt/CobaltAbstractPlugin.h>
 
 @interface CobaltWebservicesPlugin : CobaltAbstractPlugin
 {
