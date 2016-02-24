@@ -101,11 +101,7 @@ static WebServicesAPI *sharedApi = nil;
                 if (storedValue) {
                     __block NSDictionary *storedDataToSend = nil;
                     
-                    NSError *error;
                     NSData *data = [storedValue dataUsingEncoding:NSUTF8StringEncoding];
-                    __block NSDictionary *storedJSONValue = [NSJSONSerialization JSONObjectWithData:data
-                                                                                            options:kNilOptions
-                                                                                              error:&error];
                     
                     if ((data || storedValue)
                         && [viewController conformsToProtocol:@protocol(WebServicesStorageDelegate)]
@@ -113,6 +109,11 @@ static WebServicesAPI *sharedApi = nil;
                         && processData) {
                         [[NSThread mainThread] performBlock:^{
                             if (data) {
+                                NSError *error;
+                                NSDictionary *storedJSONValue = [NSJSONSerialization JSONObjectWithData:data
+                                                                                                options:kNilOptions
+                                                                                                  error:&error];
+                                
                                 id<WebServicesStorageDelegate> p = (id<WebServicesStorageDelegate>) viewController;
                                 storedJSONValue = [p processData:storedJSONValue
                                                   withParameters:processData];
@@ -204,9 +205,9 @@ static WebServicesAPI *sharedApi = nil;
             
             self.nbRequete++;
             [self checkNetworkActivity];
-            NSData *requestData = [NSURLConnection sendSynchronousRequest:request
-                                                        returningResponse:&response
-                                                                    error:&errorHttp];
+            __block NSData *requestData = [NSURLConnection sendSynchronousRequest:request
+                                                                returningResponse:&response
+                                                                            error:&errorHttp];
             self.nbRequete--;
             [self checkNetworkActivity];
             
@@ -219,14 +220,13 @@ static WebServicesAPI *sharedApi = nil;
             
             if (response.statusCode < 400
                 && response.statusCode != 0) {
-                NSError *error;
-                
-                __block NSDictionary *data = [NSJSONSerialization JSONObjectWithData:requestData
+                if (requestData) {
+                    [[NSThread mainThread] performBlock:^{
+                        NSError *error;
+                        NSDictionary *data = [NSJSONSerialization JSONObjectWithData:requestData
                                                                              options:kNilOptions
                                                                                error:&error];
-                
-                if (data) {
-                    [[NSThread mainThread] performBlock:^{
+                        
                         if ([viewController conformsToProtocol:@protocol(WebServicesStorageDelegate)]
                             && [viewController respondsToSelector:@selector(processData:withParameters:)]
                             && processData) {
@@ -382,11 +382,7 @@ static WebServicesAPI *sharedApi = nil;
                  if (storedValue) {
                      __block NSDictionary *storedDataToSend = nil;
                      
-                     NSError *error;
                      NSData *data = [storedValue dataUsingEncoding:NSUTF8StringEncoding];
-                     __block NSDictionary *storedJSONValue = [NSJSONSerialization JSONObjectWithData:data
-                                                                                             options:kNilOptions
-                                                                                               error:&error];
                      
                      if ((data || storedValue)
                          && [viewController conformsToProtocol:@protocol(WebServicesStorageDelegate)]
@@ -394,6 +390,11 @@ static WebServicesAPI *sharedApi = nil;
                          && processData) {
                          [[NSThread mainThread] performBlock:^{
                              if (data) {
+                                 NSError *error;
+                                 NSDictionary *storedJSONValue = [NSJSONSerialization JSONObjectWithData:data
+                                                                                                 options:kNilOptions
+                                                                                                   error:&error];
+                                 
                                  id<WebServicesStorageDelegate> p = (id<WebServicesStorageDelegate>) viewController;
                                  storedJSONValue = [p processData:storedJSONValue
                                                    withParameters:processData];
@@ -486,9 +487,9 @@ static WebServicesAPI *sharedApi = nil;
              
              self.nbRequete++;
              [self checkNetworkActivity];
-             NSData *requestData = [NSURLConnection sendSynchronousRequest:request
-                                                         returningResponse:&response
-                                                                     error:&errorHttp];
+             __block NSData *requestData = [NSURLConnection sendSynchronousRequest:request
+                                                                 returningResponse:&response
+                                                                             error:&errorHttp];
              self.nbRequete--;
              [self checkNetworkActivity];
              
@@ -501,14 +502,13 @@ static WebServicesAPI *sharedApi = nil;
              
              if (response.statusCode < 400
                  && response.statusCode != 0) {
-                 NSError *error;
-                 
-                 __block NSDictionary *data = [NSJSONSerialization JSONObjectWithData:requestData
+                 if (requestData) {
+                     [[NSThread mainThread] performBlock:^{
+                         NSError *error;
+                         NSDictionary *data = [NSJSONSerialization JSONObjectWithData:requestData
                                                                               options:kNilOptions
                                                                                 error:&error];
-                 
-                 if (data) {
-                     [[NSThread mainThread] performBlock:^{
+                         
                           if ([viewController conformsToProtocol:@protocol(WebServicesStorageDelegate)]
                               && [viewController respondsToSelector:@selector(processData:withParameters:)]
                               && processData) {
