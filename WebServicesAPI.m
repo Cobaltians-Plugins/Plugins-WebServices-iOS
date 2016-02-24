@@ -220,13 +220,17 @@ static WebServicesAPI *sharedApi = nil;
             
             if (response.statusCode < 400
                 && response.statusCode != 0) {
+                __block NSDictionary *data = nil;
+                
                 if (requestData) {
+                    NSError *error;
+                    data = [NSJSONSerialization JSONObjectWithData:requestData
+                                                           options:kNilOptions
+                                                             error:&error];
+                }
+                
+                if (data) {
                     [[NSThread mainThread] performBlock:^{
-                        NSError *error;
-                        NSDictionary *data = [NSJSONSerialization JSONObjectWithData:requestData
-                                                                             options:kNilOptions
-                                                                               error:&error];
-                        
                         if ([viewController conformsToProtocol:@protocol(WebServicesStorageDelegate)]
                             && [viewController respondsToSelector:@selector(processData:withParameters:)]
                             && processData) {
@@ -502,12 +506,18 @@ static WebServicesAPI *sharedApi = nil;
              
              if (response.statusCode < 400
                  && response.statusCode != 0) {
+                 __block NSDictionary *data = nil;
+                 
                  if (requestData) {
+                     NSError *error;
+                     data = [NSJSONSerialization JSONObjectWithData:requestData
+                                                            options:kNilOptions
+                                                              error:&error];
+                 }
+                 
+                 if (data) {
                      [[NSThread mainThread] performBlock:^{
-                         NSError *error;
-                         NSDictionary *data = [NSJSONSerialization JSONObjectWithData:requestData
-                                                                              options:kNilOptions
-                                                                                error:&error];
+                         
                          
                           if ([viewController conformsToProtocol:@protocol(WebServicesStorageDelegate)]
                               && [viewController respondsToSelector:@selector(processData:withParameters:)]
